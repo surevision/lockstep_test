@@ -1,4 +1,7 @@
+var EventManager = require("../common/EventManager");
+var Events = require("../common/Const").Events;
 var Common = require("../common/Common");
+
 cc.Class({
     extends: cc.Component,
 
@@ -25,8 +28,16 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-
+        EventManager.registerEvent(Events.EnterHall, this, this.enterHall);
     },
+
+    onDestroy: function() {
+        EventManager.unregisterEvent(this);
+    },
+
+    enterHall: function() {
+        cc.director.loadScene("Hall");
+    }
 
     // sign up new user
     onSignUp: function() {
