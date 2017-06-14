@@ -1,5 +1,6 @@
 var EventManager = require("../common/EventManager");
 var Events = require("../common/Const").Events;
+var NetworkWatcher = require("../common/NetworkWatcher");
 var Common = require("../common/Common");
 
 cc.Class({
@@ -37,7 +38,21 @@ cc.Class({
 
     enterHall: function() {
         cc.director.loadScene("Hall");
-    }
+    },
+
+    // sign in
+    onSignIn: function() {
+        var self = this;
+        var username = this.usernameEdit.string;
+        var password = this.passwordEdit.string;
+        cc.log(username, password);
+        var ip = "127.0.0.1";
+        var port = 3014;
+        var rid = 0;    // 未进入房间的channel
+        NetworkWatcher.connect(ip, port, username, password, rid, function(err){
+            cc.log(err);
+        });
+    },
 
     // sign up new user
     onSignUp: function() {

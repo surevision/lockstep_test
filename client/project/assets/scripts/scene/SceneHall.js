@@ -1,4 +1,4 @@
-var NetworkWacher = require("../common/NetworkWacher");
+var NetworkWatcher = require("../common/NetworkWatcher");
 var EventManager = require("../common/EventManager");
 var Events = require("../common/Const").Events;
 
@@ -48,7 +48,7 @@ cc.Class({
 
     requestRooms: function() {
         var netEvent = "hall.hallHandler.rooms";
-        NetworkWacher.send(netEvent, {}, function(data) {
+        NetworkWatcher.send(netEvent, {}, function(data) {
             cc.log(data);
         });
     },
@@ -60,7 +60,7 @@ cc.Class({
                 this.addRoom(i);
             }
         }
-        for(var i = 0; i < data.rooms.length; i += 1) {
+        for(var i = 0; i < this.totalCount; i += 1) {
             this.updateRoom(i, data.rooms[i]);
         }
     },
@@ -77,7 +77,11 @@ cc.Class({
     // 更新房间信息
     updateRoom: function(index, roomData) {
         var item = this.roomItems[index];
-        item.string = cc.js.formatStr("ROOM %s: %s / %s", index, roomData.l, roomData.r) ;//"ROOM " + index + ": " + roomData.l + "/" + roomData.r;
+        if (!!roomData) {
+            item.string = cc.js.formatStr("ROOM %s: %s / %s", index, roomData.l, roomData.r) ;//"ROOM " + index + ": " + roomData.l + "/" + roomData.r;
+        } else {
+            item.enabled = false;
+        }
     }
 
     // called every frame, uncomment this function to activate update callback

@@ -1,3 +1,5 @@
+var hallDomain = require("../../../domain/hall/hall");
+
 module.exports = function(app) {
 	return new HallRemote(app);
 };
@@ -5,22 +7,10 @@ module.exports = function(app) {
 var HallRemote = function(app) {
 	this.app = app;
 	this.channelService = app.get('channelService');
-	this.rooms = [];
-	var roomMax = 10;
-	for (var i = 0; i < roomMax; i += 1) {
-		var room = {
-			index: i,
-			roomData: {
-				l: "",
-				r: ""
-			}
-		}
-		this.rooms.push(room);
-	}
 };
 
 /**
- * Add user into Hall channel.
+ * Add user into Hall.
  *
  * @param {String} uid unique id for user
  * @param {String} sid server id
@@ -40,6 +30,15 @@ HallRemote.prototype.add = function(uid, sid, name, flag, cb) {
 	if( !! channel) {
 		channel.add(uid, sid);
 	}
+
+	// // enterHall msg
+	// param = {};
+	// var tuid = uid;
+	// var tsid = channel.getMember(tuid)['sid'];
+	// this.channelService.pushMessageByUids('EnterHall', param, [{
+	// 	uid: tuid,
+	// 	sid: tsid
+	// }]);
 
 	cb(this.get(name, flag));
 };
@@ -63,6 +62,13 @@ HallRemote.prototype.get = function(name, flag) {
 		users[i] = users[i].split('*')[0];
 	}
 	return users;
+};
+
+HallRemote.prototype.getRooms = function(app) {
+	console.log("=======================hall remote=====================");
+	//console.log(this.app);
+	var hall = hallDomain.getInstance(app);
+	return hall.rooms;
 };
 
 /**

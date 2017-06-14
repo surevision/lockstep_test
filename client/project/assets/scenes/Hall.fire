@@ -726,6 +726,7 @@
     "itemTemplate": {
       "__id__": 5
     },
+    "spacing": 10,
     "totalRooms": 0
   }
 ]

@@ -1,5 +1,5 @@
 var Const = {
-	Events = {
+	Events: {
         EnterHall: "EnterHall",
         UpdataHall: "UpdataHall"
     }

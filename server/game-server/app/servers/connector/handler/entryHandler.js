@@ -12,7 +12,7 @@ var Handler = function(app) {
 var handler = Handler.prototype;
 
 /**
- * New client entry chat server.
+ * New client entry server.
  *
  * @param  {Object}   msg     request message
  * @param  {Object}   session current session object
@@ -23,7 +23,10 @@ handler.enter = function(msg, session, next) {
 	var self = this;
 	checkUserInfo(msg.username, msg.password, function(err) {
 		if(err) {
-			console.error("check user info failed!");
+			next(null, {
+				code: 501,
+				error: "check user info failed!"
+			});
 			return;
 		}
 		var rid = msg.rid;
@@ -34,7 +37,7 @@ handler.enter = function(msg, session, next) {
 		if( !! sessionService.getByUid(uid)) {
 			next(null, {
 				code: 500,
-				error: true
+				error: "user already logged in!"
 			});
 			return;
 		}
@@ -49,9 +52,11 @@ handler.enter = function(msg, session, next) {
 		session.on('closed', onUserLeave.bind(null, self.app));
 
 		//put user into channel
-		self.app.rpc.chat.chatRemote.add(session, uid, self.app.get('serverId'), rid, true, function(users){
+		//console.log(self.app);
+		self.app.rpc.hall.hallRemote.add(session, uid, self.app.get('serverId'), rid, true, function(users){
 			next(null, {
-				users:users
+				code: 0,
+				users: users
 			});
 		});
 	})
@@ -89,5 +94,5 @@ var onUserLeave = function(app, session) {
 	if(!session || !session.uid) {
 		return;
 	}
-	app.rpc.chat.chatRemote.kick(session, session.uid, app.get('serverId'), session.get('rid'), null);
+	app.rpc.hall.hallRemote.kick(session, session.uid, app.get('serverId'), session.get('rid'), null);
 };
