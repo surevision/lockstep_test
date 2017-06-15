@@ -2,7 +2,10 @@ var Const = {
 	Events: {
         Disconnected: "Disconnected",
         EnterHall: "EnterHall",
-        UpdataHall: "UpdataHall"
+        UpdataHall: "UpdataHall",
+        UpdateRoomInfo: "UpdateRoomInfo",
+        UpdateRoomPlayers: "UpdateRoomPlayers",
+        ExitRoom: "ExitRoom"
     }
 };
 

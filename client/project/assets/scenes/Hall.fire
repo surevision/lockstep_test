@@ -131,7 +131,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 124.43,
+      "width": 100.06,
       "height": 40
     },
     "_children": [],
@@ -176,7 +176,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "ROOM",
+    "_N$string": "HALL",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$overflow": 0
@@ -240,7 +240,7 @@
     "node": {
       "__id__": 5
     },
-    "_enabled": false,
+    "_enabled": true,
     "_useOriginalSize": false,
     "_actualFontSize": 16,
     "_fontSize": 16,

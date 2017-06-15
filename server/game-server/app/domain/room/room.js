@@ -6,11 +6,6 @@ var Instance = function(rid) {
 
 module.exports = Instance;
 
-Instance.create = function(rid) {
-	var room = new Instance(rid);
-	return room;
-};
-
 Instance.prototype.isFull = function() {
 	return this.l && this.l != "" && this.r && this.r != "";
 };
@@ -37,3 +32,4 @@ Instance.prototype.removeLeftPlayer = function() {
 Instance.prototype.removeRightPlayer = function(username) {
 	this.r = "";
 };
+

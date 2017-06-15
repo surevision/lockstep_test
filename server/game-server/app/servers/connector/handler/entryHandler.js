@@ -79,7 +79,7 @@ var checkUserInfo = function(username, password, cb) {
 			cb(err);
 			return;
 		}
-		cb(userInfo.uid);
+		cb(null, userInfo.uid);
 	});
 }
 

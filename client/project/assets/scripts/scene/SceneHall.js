@@ -2,6 +2,7 @@ var NetworkWatcher = require("../common/NetworkWatcher");
 var EventManager = require("../common/EventManager");
 var Events = require("../common/Const").Events;
 var handler = require("../common/Common").handler;
+var Temp = require("../common/Temp");
 
 cc.Class({
     extends: cc.Component,
@@ -43,6 +44,8 @@ cc.Class({
         this.roomItems = [];
         this.totalCount = 0;
         this.requestRooms(); // 请求房间信息
+        cc.log(this.itemTemplate);
+        this.itemTemplate.getComponent(cc.Label).enabled = false;
     },
 
     onDestroy: function() {
@@ -54,6 +57,12 @@ cc.Class({
         NetworkWatcher.send(netEvent, {}, function(data) {
             //cc.log(data);
         });
+    },
+
+    enterRoom: function(rid) {
+        cc.log("enterRoom");
+        Temp.rid = rid;
+        cc.director.loadScene("Room");
     },
 
     returnToLogin: function(data) { // 断线
@@ -84,20 +93,30 @@ cc.Class({
     },
     // 更新房间信息
     updateRoom: function(index, roomData) {
-        cc.log("updateRoom %d", index + 1, roomData);
+        // cc.log("updateRoom %d", index + 1, roomData);
         var item = this.roomItems[index];
+        if (!item) {
+            return;
+        }
         var label = item.getComponent(cc.Label);
         if (!!roomData) {
-            cc.log(item);
             var l = roomData.l ? roomData.l : " empty ";
             var r = roomData.r ? roomData.r : " empty ";
             label.string = cc.js.formatStr("ROOM %s: %s / %s", roomData.rid, l, r) ;
-            label.visible = true;
+            label.enabled = true;
             item.roomData = roomData;
+            item.on("touchend", handler(this, this.onClickEnterRoom));
         } else {
-            label.visible = false;
+            label.enabled = false;
             delete item.roomData;
         }
+    },
+
+    onClickEnterRoom: function(event) {
+        var target = event.target;
+        cc.log(target);
+        this.enterRoom(target.roomData.rid);
+        event.stopPropagation();
     }
 
     // called every frame, uncomment this function to activate update callback

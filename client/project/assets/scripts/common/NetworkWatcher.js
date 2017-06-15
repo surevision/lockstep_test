@@ -4,11 +4,22 @@ var Events = require("Const").Events;
 var NetworkWatcher = {
     // 监听pomelo事件
     init: function() {
-        cc.log("watch dse_update_hall");
+        // 更新大厅信息
         pomelo.on("dse_update_hall", function(data) {
             cc.log("on dse_update_hall");
             EventManager.dispatchEvent(Events.UpdateHall, data);
         });
+        // 更新房间信息
+        pomelo.on("dse_room_info", function(data) {
+            cc.log("on dse_room_info");
+            EventManager.dispatchEvent(Events.UpdateRoomInfo, data);
+        });
+        // 更新房间内玩家信息
+        pomelo.on("dse_room_players", function(data) {
+            cc.log("on dse_room_players");
+            EventManager.dispatchEvent(Events.UpdateRoomPlayers, data);
+        });
+        // 断线
         pomelo.on('disconnect', function(reason) {
             EventManager.dispatchEvent(Events.Disconnected, reason);
         });

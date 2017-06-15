@@ -11,5 +11,22 @@
       "required string r": 3
     },
 		"repeated room rooms" : 1
+	 },
+	 "dse_room_players" : {
+		 "message room": {
+		  "required uInt32 rid" : 1,
+      "required string l": 2,
+      "required string r": 3
+    },
+		"required room room" : 1
+	 },
+	 "dse_room_info" : {
+		 "message room": {
+		  "required uInt32 rid" : 1,
+      "required string l": 2,
+      "required string r": 3
+    },
+		"required uInt32 sa" : 1,
+		"required room room" : 2
 	 }
  }

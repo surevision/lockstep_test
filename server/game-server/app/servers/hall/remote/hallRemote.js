@@ -56,11 +56,6 @@ HallRemote.prototype.get = function(name, flag) {
 	return users;
 };
 
-HallRemote.prototype.getRooms = function(callback) {
-	var hall = hallDomain.getInstance(pomelo.app);
-	callback(null, hall.rooms);
-};
-
 /**
  * Kick user out Hall channel.
  *
@@ -70,11 +65,30 @@ HallRemote.prototype.getRooms = function(callback) {
  *
  */
 HallRemote.prototype.kick = function(uid, sid, name, cb) {
+	var rid = name;
 	var channel = this.channelService.getChannel(name, false);
 	// leave channel
 	if( !! channel) {
 		channel.leave(uid, sid);
 	}
+	// 通知大厅内的玩家房间列表变化
+	var hall = hallDomain.getInstance(pomelo.app);
+	var rooms = hall.rooms;
+	var room = rooms[rid - 1];
+	var username = uid.split('*')[0];
+	// 更新room数据
+	if (room.r == username) {
+		room.r = "";
+	} else {
+		room.l = "";
+	}
+	var param = {
+		rooms: rooms
+	};
+	var hallChannelId = 0;
+	channel =  this.channelService.getChannel(hallChannelId, true);
+	channel.pushMessage('dse_update_hall', param);
+
 	var username = uid.split('*')[0];
 	var param = {
 		route: 'onLeave',
