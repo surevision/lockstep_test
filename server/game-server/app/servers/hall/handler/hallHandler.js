@@ -155,18 +155,18 @@ handler.exit_room = function(msg, session, next) {
 	} else {
 		room.l = "";
 	}
-	// 通知大厅内的玩家房间列表变化
+	// 通知原房间中其他玩家
 	var param = {
+		room: room
+	}
+	channel.pushMessage('dse_room_players', param);
+	// 通知大厅内的玩家房间列表变化
+	param = {
 		rooms: rooms
 	};
 	var hallChannelId = 0;
 	channel = channelService.getChannel(hallChannelId, true);
 	channel.pushMessage('dse_update_hall', param);
-	// 通知原房间中其他玩家
-	param = {
-		room: room
-	}
-	channel.pushMessage('dse_room_players', param);
 
 	// 加入大厅channel
 	channel = channelService.getChannel(hallChannelId, false);
