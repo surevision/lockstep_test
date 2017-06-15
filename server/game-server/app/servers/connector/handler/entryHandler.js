@@ -21,7 +21,7 @@ var handler = Handler.prototype;
  */
 handler.enter = function(msg, session, next) {
 	var self = this;
-	checkUserInfo(msg.username, msg.password, function(err) {
+	checkUserInfo(msg.username, msg.password, function(err, dbUid) {
 		if(err) {
 			next(null, {
 				code: 501,
@@ -30,7 +30,7 @@ handler.enter = function(msg, session, next) {
 			return;
 		}
 		var rid = msg.rid;
-		var uid = msg.username + '*' + rid
+		var uid = msg.username + '*' + dbUid // 绑定为数据库uid
 		var sessionService = self.app.get('sessionService');
 
 		//duplicate log in
@@ -79,7 +79,7 @@ var checkUserInfo = function(username, password, cb) {
 			cb(err);
 			return;
 		}
-		cb();
+		cb(userInfo.uid);
 	});
 }
 

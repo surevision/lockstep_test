@@ -80,6 +80,6 @@ HallRemote.prototype.kick = function(uid, sid, name, cb) {
 		route: 'onLeave',
 		user: username
 	};
-	channel.pushMessage(param);
+	channel.pushMessage(param);	// 广播给其他玩家
 	cb();
 };

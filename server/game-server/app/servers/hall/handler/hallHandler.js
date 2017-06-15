@@ -51,6 +51,7 @@ handler.rooms = function(msg, session, next) {
 */
 handler.enter_room = function(msg, session, next) {
 	var rid = parseInt(msg.rid);	// 要加入的房间号
+	var sid = app.get('serverId');
 	var username = session.uid.split('*')[0];
 	if (isNaN(rid)) {
 		var error = "invaild rid!";
@@ -61,6 +62,7 @@ handler.enter_room = function(msg, session, next) {
 		});
 		return;
 	}
+	var channelService = this.app.get('channelService');
 	pomelo.app.rpc.hall.hallRemote.getRooms(session, function(err, rooms) {
 		var room = rooms[rid];
 		if (room.isFull()) {
@@ -73,7 +75,18 @@ handler.enter_room = function(msg, session, next) {
 			});
 			return;
 		}
-		session.set('rid', msg.rid);	// 修改玩家房间号
+		// 修改玩家房间号
+		var channel = channelService.getChannel(session.get('rid'), false);
+		// 从大厅channel中移除
+		if( !! channel) {
+			channel.leave(session.uid, sid);
+		}
+		// 加入房间channel
+		channel = channelService.getChannel(msg.rid, false);
+		channel.add(session.uid, sid);
+		// 重设session中记录的房间号
+		session.set('rid', msg.rid);
+
 		next(null, {
 			code: 0,
 			room: room
