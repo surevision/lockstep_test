@@ -9,14 +9,14 @@ var Instance = function(app) {
 
 module.exports = Instance;
 
-Instance.prototype.getInstance = function(app) {
+Instance.getInstance = function(app) {
 	if (!hallInstance) {
 		hallInstance = new Instance(app);
 		// 初始化所有房间
 		var roomMax = 10;
 		for (var i = 0; i < roomMax; i += 1) {
-			var room = Room.create(i);
-			this.rooms.push(room);
+			var room = Room.create(i + 1); // 房间号从1开始
+			hallInstance.rooms.push(room);
 		}
 	}
 	return hallInstance;

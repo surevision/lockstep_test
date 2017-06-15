@@ -1,3 +1,4 @@
+var pomelo = require("pomelo");
 var hallRemote = require('../remote/hallRemote');
 
 module.exports = function(app) {
@@ -23,20 +24,21 @@ handler.rooms = function(msg, session, next) {
 	var username = session.uid.split('*')[0];
 	var channelService = this.app.get('channelService');
 	
-	console.log(this.app.rpc);
-	var rooms = hallRemote.getRooms(this.app);
-	var param = {
-		rooms: rooms
-	};
-	channel = channelService.getChannel(rid, false);
-	var tuid = username + '*' + rid;
-	var tsid = channel.getMember(tuid)['sid'];
-	channelService.pushMessageByUids('dse_update_hall', param, [{
-		uid: tuid,
-		sid: tsid
-	}]);
-	next(null, {
-		rooms: rooms
+	pomelo.app.rpc.hall.hallRemote.getRooms(session, function(err, rooms) {
+		var param = {
+			rooms: rooms
+		};
+		channel = channelService.getChannel(rid, false);
+		var tuid = username + '*' + rid;
+		var tsid = channel.getMember(tuid)['sid'];
+		// channelService.pushMessageByUids('dse_update_hall', param, [{
+		// 	uid: tuid,
+		// 	sid: tsid
+		// }]);
+		channel.pushMessage('dse_update_hall', param);
+		next(null, {
+			route: msg.route
+		});
 	});
 };
 
@@ -59,22 +61,22 @@ handler.enter_room = function(msg, session, next) {
 		});
 		return;
 	}
-	var rooms = hallRemote.getRooms(this.app);
-	var room = rooms[rid];
-	if (room.isFull()) {
-		// 房间人满
-		var error = "room is full!";
-		console.error(error);
+	pomelo.app.rpc.hall.hallRemote.getRooms(session, function(err, rooms) {
+		var room = rooms[rid];
+		if (room.isFull()) {
+			// 房间人满
+			var error = "room is full!";
+			console.error(error);
+			next(null, {
+				code: 2,
+				error: error
+			});
+			return;
+		}
+		session.set('rid', msg.rid);	// 修改玩家房间号
 		next(null, {
-			code: 2,
-			error: error
+			code: 0,
+			room: room
 		});
-		return;
-	}
-	session.set('rid', msg.rid);	// 修改玩家房间号
-	next(null, {
-		code: 0,
-		room: room
 	});
-
 };

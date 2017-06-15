@@ -1,12 +1,12 @@
 var Instance = function(rid) {
-	this.roomId = rid;
+	this.rid = rid;
 	this.l = "";
 	this.r = "";
 };
 
 module.exports = Instance;
 
-Instance.prototype.create = function(rid) {
+Instance.create = function(rid) {
 	var room = new Instance(rid);
 	return room;
 };

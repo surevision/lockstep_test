@@ -1,3 +1,4 @@
+var pomelo = require("pomelo");
 var hallDomain = require("../../../domain/hall/hall");
 
 module.exports = function(app) {
@@ -64,11 +65,9 @@ HallRemote.prototype.get = function(name, flag) {
 	return users;
 };
 
-HallRemote.prototype.getRooms = function(app) {
-	console.log("=======================hall remote=====================");
-	//console.log(this.app);
-	var hall = hallDomain.getInstance(app);
-	return hall.rooms;
+HallRemote.prototype.getRooms = function(callback) {
+	var hall = hallDomain.getInstance(pomelo.app);
+	callback(null, hall.rooms);
 };
 
 /**

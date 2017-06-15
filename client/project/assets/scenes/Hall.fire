@@ -278,7 +278,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 240,
-      "height": 480
+      "height": 440
     },
     "_children": [
       {
@@ -340,7 +340,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 12,
-      "height": 480
+      "height": 440
     },
     "_children": [
       {
@@ -534,7 +534,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 240
+      "y": 0
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -572,7 +572,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 240,
-      "height": 480
+      "height": 440
     },
     "_children": [
       {

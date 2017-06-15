@@ -1,6 +1,7 @@
 var NetworkWatcher = require("../common/NetworkWatcher");
 var EventManager = require("../common/EventManager");
 var Events = require("../common/Const").Events;
+var handler = require("../common/Common").handler;
 
 cc.Class({
     extends: cc.Component,
@@ -37,8 +38,10 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        EventManager.registerEvent(Events.UpdateHall, this, this.updateHall);
+        EventManager.registerEvent(Events.Disconnected, this, handler(this, this.returnToLogin));
+        EventManager.registerEvent(Events.UpdateHall, this, handler(this, this.updateHall));
         this.roomItems = [];
+        this.totalCount = 0;
         this.requestRooms(); // 请求房间信息
     },
 
@@ -49,11 +52,16 @@ cc.Class({
     requestRooms: function() {
         var netEvent = "hall.hallHandler.rooms";
         NetworkWatcher.send(netEvent, {}, function(data) {
-            cc.log(data);
+            //cc.log(data);
         });
     },
 
+    returnToLogin: function(data) { // 断线
+        cc.director.loadScene("Login");
+    },
+
     updateHall: function(data) {
+        cc.log(data.rooms);
         if (this.totalRooms < data.rooms.length) {
             // 补充创建房间节点
             for (var i = this.totalRooms; i < data.rooms.length; i += 1) {
@@ -69,18 +77,26 @@ cc.Class({
         this.totalCount += 1;
         this.scrollView.content.height = this.totalCount * (this.itemTemplate.height + this.spacing) + this.spacing; // get total content height
         var item = cc.instantiate(this.itemTemplate);
-        item.enabled = true;
-        item.y = -item.height * (0.5 + index) - this.spacing * (index + 1);
         this.scrollView.content.addChild(item);
+        item.x = -item.parent.width / 2;
+        item.y = -item.height * (0.5 + index) - this.spacing * (index + 1);
         this.roomItems[index] = item;
     },
     // 更新房间信息
     updateRoom: function(index, roomData) {
+        cc.log("updateRoom %d", index + 1, roomData);
         var item = this.roomItems[index];
+        var label = item.getComponent(cc.Label);
         if (!!roomData) {
-            item.string = cc.js.formatStr("ROOM %s: %s / %s", index, roomData.l, roomData.r) ;//"ROOM " + index + ": " + roomData.l + "/" + roomData.r;
+            cc.log(item);
+            var l = roomData.l ? roomData.l : " empty ";
+            var r = roomData.r ? roomData.r : " empty ";
+            label.string = cc.js.formatStr("ROOM %s: %s / %s", roomData.rid, l, r) ;
+            label.visible = true;
+            item.roomData = roomData;
         } else {
-            item.enabled = false;
+            label.visible = false;
+            delete item.roomData;
         }
     }
 

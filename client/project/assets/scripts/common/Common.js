@@ -34,6 +34,11 @@ var Common = {
 			}
 		};
 		xhr.send(dataStr);
+	},
+	handler: function(target, callback) {
+		return function() {
+			callback.apply(target, arguments);
+		}
 	}
 };
 

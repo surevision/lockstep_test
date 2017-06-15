@@ -3,5 +3,13 @@
   	"required string msg": 1,
   	"required string from": 2,
   	"required string target": 3
-   }
+   },
+	 "dse_update_hall" : {
+		 "message room": {
+		  "required uInt32 rid" : 1,
+      "required string l": 2,
+      "required string r": 3
+    },
+		"repeated room rooms" : 1
+	 }
  }

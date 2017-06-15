@@ -4,8 +4,13 @@ var Events = require("Const").Events;
 var NetworkWatcher = {
     // 监听pomelo事件
     init: function() {
+        cc.log("watch dse_update_hall");
         pomelo.on("dse_update_hall", function(data) {
-            EventManager.dispatchEvent(Events.UpdataHall, data);
+            cc.log("on dse_update_hall");
+            EventManager.dispatchEvent(Events.UpdateHall, data);
+        });
+        pomelo.on('disconnect', function(reason) {
+            EventManager.dispatchEvent(Events.Disconnected, reason);
         });
     },
     // 连接pomelo服务器
@@ -27,6 +32,7 @@ var NetworkWatcher = {
                         callback(data);
                         return;
                     }
+                    NetworkWatcher.init();
                     EventManager.dispatchEvent(Events.EnterHall);
                 });
             });
