@@ -31,11 +31,11 @@ handler.rooms = function(msg, session, next) {
 		channel = channelService.getChannel(rid, false);
 		var tuid = username + '*' + rid;
 		var tsid = channel.getMember(tuid)['sid'];
-		// channelService.pushMessageByUids('dse_update_hall', param, [{
-		// 	uid: tuid,
-		// 	sid: tsid
-		// }]);
-		channel.pushMessage('dse_update_hall', param);
+		channelService.pushMessageByUids('dse_update_hall', param, [{
+			uid: tuid,
+			sid: tsid
+		}]);
+		// channel.pushMessage('dse_update_hall', param);
 		next(null, {
 			route: msg.route
 		});

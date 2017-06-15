@@ -32,15 +32,6 @@ HallRemote.prototype.add = function(uid, sid, name, flag, cb) {
 		channel.add(uid, sid);
 	}
 
-	// // enterHall msg
-	// param = {};
-	// var tuid = uid;
-	// var tsid = channel.getMember(tuid)['sid'];
-	// this.channelService.pushMessageByUids('EnterHall', param, [{
-	// 	uid: tuid,
-	// 	sid: tsid
-	// }]);
-
 	cb(this.get(name, flag));
 };
 
