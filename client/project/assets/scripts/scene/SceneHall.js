@@ -31,7 +31,7 @@ cc.Class({
         spacing: 10,
 
         // 当前房间数
-        totalRooms: {
+        totalCount: {
             default: 0,
             visible: false
         }
@@ -42,7 +42,6 @@ cc.Class({
         EventManager.registerEvent(Events.Disconnected, this, handler(this, this.returnToLogin));
         EventManager.registerEvent(Events.UpdateHall, this, handler(this, this.updateHall));
         this.roomItems = [];
-        this.totalCount = 0;
         this.requestRooms(); // 请求房间信息
         cc.log(this.itemTemplate);
         this.itemTemplate.getComponent(cc.Label).enabled = false;
@@ -71,9 +70,9 @@ cc.Class({
 
     updateHall: function(data) {
         cc.log(data.rooms);
-        if (this.totalRooms < data.rooms.length) {
+        if (this.totalCount < data.rooms.length) {
             // 补充创建房间节点
-            for (var i = this.totalRooms; i < data.rooms.length; i += 1) {
+            for (var i = this.totalCount; i < data.rooms.length; i += 1) {
                 this.addRoom(i);
             }
         }
