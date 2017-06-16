@@ -141,6 +141,14 @@ handler.exit_room = function(msg, session, next) {
 	var hall = hallDomain.getInstance(pomelo.app);
 	var rooms = hall.rooms;
 	var room = rooms[rid - 1];
+	if (!room) {
+		// 未加入房间
+		next(null, {
+			code: 1,
+			error: "room id error!"
+		});
+		return;
+	}
 
 	// 修改玩家channel号
 	var channel = channelService.getChannel(rid, false);

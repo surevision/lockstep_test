@@ -54,7 +54,8 @@ cc.Class({
         var netEvent = "hall.hallHandler.enter_room";
         NetworkWatcher.send(netEvent, {rid: Temp.rid}, function(data) {
             if (data.error) {
-                cc.log(data.error);
+                cc.log(data);
+                self.exitRoom();
             }
         });
     },
@@ -87,11 +88,11 @@ cc.Class({
         if (this.roomId != 0) {
             var self = this;
             var netEvent = "hall.hallHandler.exit_room";
-            NetworkWatcher.send(netEvent, {rid: Temp.rid}, function(err, data) {
+            NetworkWatcher.send(netEvent, {rid: Temp.rid}, function(data) {
                 cc.log("exitRoom", data);
-                cc.director.loadScene("Hall");
             });
         }
+        cc.director.loadScene("Hall");
     }
     // called every frame, uncomment this function to activate update callback
     // update: function (dt) {

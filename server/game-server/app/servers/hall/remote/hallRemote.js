@@ -75,6 +75,10 @@ HallRemote.prototype.kick = function(uid, sid, name, cb) {
 	var hall = hallDomain.getInstance(pomelo.app);
 	var rooms = hall.rooms;
 	var room = rooms[rid - 1];
+	if (!room) {
+		cb();
+		return;
+	}
 	var username = uid.split('*')[0];
 	// 更新room数据
 	if (room.r == username) {
