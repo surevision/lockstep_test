@@ -80,10 +80,6 @@ cc.Class({
         this.rightPlayerLabel.string = cc.js.formatStr("%s", (room.r ? room.r : "empty"));
     },
 
-    onClickExit: function() {
-        this.exitRoom();
-    },
-
     exitRoom: function() {
         if (this.roomId != 0) {
             var self = this;
@@ -93,6 +89,14 @@ cc.Class({
             });
         }
         cc.director.loadScene("Hall");
+    },
+
+    onClickExit: function() {
+        this.exitRoom();
+    },
+
+    onClickReady: function(event) {
+        event.stopPropagation();
     }
     // called every frame, uncomment this function to activate update callback
     // update: function (dt) {
