@@ -1,6 +1,8 @@
 var pomelo = require("pomelo");
 var hallDomain = require("../../../domain/hall/hall");
 
+var GameRoom = require("../../../domain/room/gameRoom");
+
 module.exports = function(app) {
 	return new HallRemote(app);
 };
@@ -79,6 +81,12 @@ HallRemote.prototype.kick = function(uid, sid, name, cb) {
 		cb();
 		return;
 	}
+	// 如果在游戏中，游戏结束
+	var gameRoom = GameRoom.get(rid);
+	if (gameRoom) {
+		GameRoom.dispose(rid);
+	}
+
 	var username = uid.split('*')[0];
 	// 更新room数据
 	if (room.r == username) {

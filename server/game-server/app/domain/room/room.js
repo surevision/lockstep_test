@@ -6,6 +6,10 @@ var Instance = function(rid) {
 
 module.exports = Instance;
 
+Instance.prototype.test = function() {
+	return Math.random() * 1000;
+};
+
 Instance.prototype.isFull = function() {
 	return this.l && this.l != "" && this.r && this.r != "";
 };

@@ -5,6 +5,8 @@ var Const = {
         UpdataHall: "UpdataHall",
         UpdateRoomInfo: "UpdateRoomInfo",
         UpdateRoomPlayers: "UpdateRoomPlayers",
+        GameStart: "GameStart",
+        FrameEvent: "FrameEvent",
         ExitRoom: "ExitRoom"
     }
 };

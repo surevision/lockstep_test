@@ -19,6 +19,16 @@ var NetworkWatcher = {
             cc.log("on dse_room_players");
             EventManager.dispatchEvent(Events.UpdateRoomPlayers, data);
         });
+        // 游戏开始
+        pomelo.on("dse_game_start", function(data) {
+            cc.log("on dse_game_start");
+            EventManager.dispatchEvent(Events.GameStart, data);
+        });
+        // 接收指令
+        pomelo.on("dse_turn_act", function(data) {
+            // cc.log("on dse_turn_act");
+            EventManager.dispatchEvent(Events.FrameEvent, data);
+        });
         // 断线
         pomelo.on('disconnect', function(reason) {
             EventManager.dispatchEvent(Events.Disconnected, reason);

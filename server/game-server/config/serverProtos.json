@@ -28,5 +28,13 @@
     },
 		"required uInt32 sa" : 1,
 		"required room room" : 2
+	 },
+	 "dse_game_start" : {
+		 "required int32 ba" : 1
+	 },
+	 "dse_turn_act" : {
+		 "required uInt32 frame" : 1,
+		 "required int32 ry" : 2,
+		 "required int32 ly" : 3
 	 }
  }

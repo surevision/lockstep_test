@@ -2,6 +2,8 @@ var pomelo = require("pomelo");
 var hallRemote = require('../remote/hallRemote');
 var hallDomain = require("../../../domain/hall/hall");
 
+var GameRoom = require("../../../domain/room/gameRoom");
+
 module.exports = function(app) {
 	return new Handler(app);
 };
@@ -65,7 +67,7 @@ handler.enter_room = function(msg, session, next) {
 	var hall = hallDomain.getInstance(pomelo.app);
 	var rooms = hall.rooms;
 	var room = rooms[rid - 1];
-	if (room.l && room.l != "" && room.r && room.r != "") {
+	if (room.isFull()) {
 		// 房间人满
 		var error = "room is full!";
 		console.error(error);
@@ -149,7 +151,11 @@ handler.exit_room = function(msg, session, next) {
 		});
 		return;
 	}
-
+	// 如果在游戏中，游戏结束
+	var gameRoom = GameRoom.get(rid);
+	if (gameRoom) {
+		GameRoom.dispose(rid);
+	}
 	// 修改玩家channel号
 	var channel = channelService.getChannel(rid, false);
 	var sid = channel.getMember(session.uid)['sid'];
@@ -185,5 +191,86 @@ handler.exit_room = function(msg, session, next) {
 
 	next(null, {
 		code: 0
+	});
+};
+
+/*
+ * 玩家准备
+ *
+ * @param {Object} msg message from client
+ * @param {Object} session
+ * @param  {Function} next next stemp callback
+*/
+handler.game_ready = function(msg, session, next) {
+	var rid = session.get('rid');
+	var username = session.uid.split('*')[0];
+	var channelService = pomelo.app.get('channelService');
+	var hall = hallDomain.getInstance(pomelo.app);
+	var rooms = hall.rooms;
+	var room = rooms[rid - 1];
+	if (!room) {
+		// 未加入房间
+		next(null, {
+			code: 1,
+			error: "room id error!"
+		});
+		return;
+	}
+	var gameRoom = GameRoom.createRoom(room);
+	gameRoom.ready += 1;
+	if (gameRoom.isReady()) {
+		gameRoom.start();
+		var channel = channelService.getChannel(rid, true);
+		var param = {
+			ba: gameRoom.ballAngle
+		};
+		channel.pushMessage('dse_game_start', param);
+	}
+	next(null, {
+		room: room
+	});
+};
+
+/*
+ * 接收移动指令
+ *
+ * @param {Object} msg message from client
+ * @param {Object} session
+ * @param  {Function} next next stemp callback
+*/
+handler.turn_act = function(msg, session, next) {
+	var rid = session.get('rid');
+	var username = session.uid.split('*')[0];
+	var channelService = pomelo.app.get('channelService');
+	var hall = hallDomain.getInstance(pomelo.app);
+	var rooms = hall.rooms;
+	var room = rooms[rid - 1];
+	if (!room) {
+		// 未加入房间
+		next(null, {
+			code: 1,
+			error: "room id error!"
+		});
+		return;
+	}
+	var gameRoom = GameRoom.get(rid);
+	var selfArea = 0;	// 自己的位置 0:右 1:左
+	if (room.r == username) {
+	} else {
+		selfArea = 1;
+	}
+	// if (msg.frame > gameRoom.frame ||
+	// 	msg.frame < gameRoom.frame - 2) {
+	// 	// 过期指令
+	// 	next(null, {
+	// 		code: 1,
+	// 		error: "msg is outdated!"
+	// 	});
+	// 	return;
+	// }
+	gameRoom.addAct(msg.y, selfArea);
+	next(null, {
+		code: 0,
+		room: room
 	});
 };
