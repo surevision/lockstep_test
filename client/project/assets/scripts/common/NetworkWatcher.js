@@ -77,7 +77,7 @@ var NetworkWatcher = {
     },
     // 发送pomelo消息
     send: function(netEvent, data, cb) {
-        cc.log("send event: %s", netEvent, data);
+        // cc.log("send event: %s", netEvent, data);
         pomelo.request(netEvent, data, cb);
     }
 }

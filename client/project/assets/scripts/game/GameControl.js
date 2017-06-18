@@ -77,16 +77,17 @@ instance.dispose = function() {
 };
 
 instance.update = function(dt) {
-    for (var frameEvent in this.frameEvents) {
+    for (var i = 0; i < this.frameEvents.length; i += 1) {
+        var frameEvent = this.frameEvents[i];
         this.frame = frameEvent.frame;
         // 设置位置
         var ly = frameEvent.ly; // 左边玩家位置
         var ry = frameEvent.ry; // 右边玩家位置
-        if(ly != -1) {
-            this.spriteLeftPad.node.y = ly;
+        if(!isNaN(ly) && ly != -1) {
+            this.spriteLeftPad.node.y = parseInt(ly);
         }
-        if (ry != -1) {
-            this.spriteRightPad.node.y = ry;
+        if (!isNaN(ry) & ry != -1) {
+            this.spriteRightPad.node.y = parseInt(ry);
         }
         // 计算球体运动
         this.nextBall(dt);
@@ -198,7 +199,7 @@ instance.onTouchMove = function(event) {
     var dy = y - this.lastTouchPos.y;
     this.lastTouchPos = cc.p(x, y);
     var _x = pad.node.x;
-    var _y = pad.node.y + Math.round(dy * 5);
+    var _y = pad.node.y + Math.floor(dy * 5);
     this.collectFrameEvent(cc.p(_x, _y));
 };
 
@@ -212,7 +213,7 @@ instance.onFrameEvent = function(data) {
 
 instance.collectFrameEvent = function(pos) {
     this.frameEvent = {
-        frame: this.frame,
+        frame: 0,
         y: pos.y
     };
 };

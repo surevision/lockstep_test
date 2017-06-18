@@ -49,7 +49,7 @@ instance.reset = function() {
 };
 
 instance.start = function() {
-	this.timer = setInterval(handler(this, this.tick), 1.0 / 60 * 1000);
+	this.timer = setInterval(handler(this, this.tick), 1.0 / 30 * 1000);
 };
 
 instance.stop = function() {
