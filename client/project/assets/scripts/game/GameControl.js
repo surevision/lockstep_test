@@ -77,24 +77,31 @@ instance.dispose = function() {
 };
 
 instance.update = function(dt) {
+    // cc.log("update begin");
+    var ry = this.spriteRightPad.node.y;
+    var ly = this.spriteLeftPad.node.y;
     for (var i = 0; i < this.frameEvents.length; i += 1) {
         var frameEvent = this.frameEvents[i];
         this.frame = frameEvent.frame;
+        // cc.log("update frame %s", this.frame);
         // 设置位置
-        var ly = frameEvent.ly; // 左边玩家位置
-        var ry = frameEvent.ry; // 右边玩家位置
-        if(!isNaN(ly) && ly != -1) {
-            this.spriteLeftPad.node.y = parseInt(ly);
+        if(!isNaN(frameEvent.ly) && frameEvent.ly != -1) {
+            ly = frameEvent.ly; // 左边玩家位置
         }
-        if (!isNaN(ry) & ry != -1) {
-            this.spriteRightPad.node.y = parseInt(ry);
+        if (!isNaN(frameEvent.ry) & frameEvent.ry != -1) {
+            ry = frameEvent.ry; // 右边玩家位置
         }
         // 计算球体运动
-        this.nextBall(dt);
+        this.nextBall(dt, ry, ly);
     }
+    this.spriteLeftPad.node.y = parseInt(ly);
+    this.spriteRightPad.node.y = parseInt(ry);
+    this.nodeBall.x = this.realBallX();
+    this.nodeBall.y = this.realBallY();
     this.frame += 1;
     this.frameEvents = [];  // 清空网络消息
     this.sendFrameEvent();
+    // cc.log("update end");
 };
 
 instance.setupBall = function(ballX, ballY, ballAngle) {
@@ -112,7 +119,7 @@ instance.realBallY = function() {
 };
 
 // 计算球接下来的位置
-instance.nextBall = function(dt) {
+instance.nextBall = function(dt, ry, ly) {
     this.ballX = this.ballX + this.ballSpeed * Math.cos(this.ballAngle / 180.0 * Math.PI);
     this.ballY = this.ballY + this.ballSpeed * Math.sin(this.ballAngle / 180.0 * Math.PI);
     if (this.realBallX() - GameControl.RADIO <= -this.spriteControl.node.width / 2) {
@@ -143,18 +150,16 @@ instance.nextBall = function(dt) {
         this.ballY = (this.spriteControl.node.height / 2 - GameControl.RADIO) * 1024;
         this.ballAngle = 360 - this.ballAngle;
     }
-    this.checkPads();
-    this.nodeBall.x = this.realBallX();
-    this.nodeBall.y = this.realBallY();
+    this.checkPads(ry, ly);
 }
 
 // 碰撞检测
-instance.checkPads = function() {
+instance.checkPads = function(ry, ly) {
     var pads = [this.spriteRightPad, this.spriteLeftPad];
     for (var i = 0; i < pads.length; i += 1) {
         var pad = pads[i];
         var padX = pad.node.x;
-        var padY = pad.node.y
+        var padY = (i == 0 ? ry : ly);//pad.node.y
         var padW = pad.node.width;
         var padH = pad.node.height;
         if (this.realBallX() >= padX - padW / 2 &&
@@ -188,6 +193,7 @@ instance.onTouchStart = function() {
 }
 
 instance.onTouchMove = function(event) {
+    // cc.log("onTouchMove");
     var pads = [this.spriteRightPad, this.spriteLeftPad];
     var pad = pads[this.area];
     var touches = event.getTouches();
@@ -207,13 +213,13 @@ instance.onTouchMove = function(event) {
 
 // 收到帧行动
 instance.onFrameEvent = function(data) {
-    // console.log(data);
+    // console.log("onFrameEvent");
     this.frameEvents.push(data);
 };
 
 instance.collectFrameEvent = function(pos) {
     this.frameEvent = {
-        frame: 0,
+        frame: this.frame,
         y: pos.y
     };
 };
