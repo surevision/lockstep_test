@@ -2,6 +2,8 @@
 
 帧同步测试项目。
 
+在线演示：[点我](http://www.surebrz.com/ball/)
+
 ## client
 
 cocos creator工程
